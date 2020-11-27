@@ -2,25 +2,14 @@
 {% block content %}
   <article class="media content-section">
     <div class="media-body">
-      <h2><a class="article-title" href="#">Premium Account</a></h2>
-      <p class="article-content">High Security</p>
+      <h2><a class="article-title" href="#">My Account</a></h2>
+      <p class="article-content">Your password will be hashed with salt and pepper</p>
     </div>
 
     <div class="article-metadata">
-      <a class="mr-2" href="{{ url_for('login_1') }}">Login</a>
-      <a class="mr-2" href="{{ url_for('register_1') }}">Register</a>
+      <a class="mr-2" href="{{ url_for('login') }}">Login</a>
+      <a class="mr-2" href="{{ url_for('register') }}">Register</a>
     </div>
   </article>
 
-  <article class="media content-section">
-    <div class="media-body">
-      <h2><a class="article-title" href="#">standard Account</a></h2>
-      <p class="article-content">Vulnerable</p>
-    </div>
-
-    <div class="article-metadata">
-      <a class="mr-2" href="{{ url_for('login_1') }}">Login</a>
-      <a class="mr-2" href="{{ url_for('register_1') }}">Register</a>
-    </div>
-  </article>
 {% endblock content %}

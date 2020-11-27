@@ -2,8 +2,14 @@ from flask import render_template, url_for, flash, redirect, request
 from myblog.forms import RegistrationForm, LoginForm
 from myblog import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-from myblog.models import User_1, Post_1
+from myblog.models import User, Post
+# from myblog.hashutils import make_pw_hash, check_pw_hash
+import hashlib
+import secrets
+import string
 
+
+peppers = list(string.ascii_lowercase) + list(string.ascii_uppercase)
 
 @app.route('/')
 @app.route('/home')
@@ -16,34 +22,48 @@ def about():
   return render_template('about.html', title='About')
 
 
-@app.route("/register-1", methods=['GET', 'POST'])
-def register_1():
+@app.route("/register", methods=['GET', 'POST'])
+def register():
   if current_user.is_authenticated:
     return redirect(url_for('home'))
   form = RegistrationForm()
   if form.validate_on_submit():
-    hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-    user = User_1(username=form.username.data, email=form.email.data, password=hashed_password)
+    # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+    # hashed_password = make_pw_hash(form.password.data)
+    pw_salt = secrets.token_urlsafe(6)
+    hashed_password = hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(pw_salt+secrets.choice(peppers)), 100).hex()
+    user = User(username=form.username.data, email=form.email.data, password=hashed_password, salt=pw_salt)
     db.session.add(user)
     db.session.commit()
     flash('Your accoutn has been created! You are now able to log in', 'success')
-    return redirect(url_for('login_1'))
+    return redirect(url_for('login'))
   return render_template('register.html', title='Register', form=form)
 
 
-@app.route("/login-1", methods=['GET', 'POST'])
-def login_1():
+@app.route("/login", methods=['GET', 'POST'])
+def login():
   if current_user.is_authenticated:
     return redirect(url_for('home'))
   form = LoginForm()
+  isValidPW = False
   if form.validate_on_submit():
-      user = User_1.query.filter_by(email=form.email.data).first()
-      if user and bcrypt.check_password_hash(user.password, form.password.data):
-        login_user(user, remember=form.remember.data)
-        next_page = request.args.get('next')
-        return redirect(next_page) if next_page else redirect(url_for('home'))
+      user = User.query.filter_by(email=form.email.data).first()
+      # if user and bcrypt.check_password_hash(user.password, form.password.data):
+      # if user and check_pw_hash:
+      if user:
+        for pepper in peppers:
+          if hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(user.salt+pepper), 100).hex() == user.password:
+            isValidPW = True
+            break
+
+        if isValidPW:
+          login_user(user, remember=form.remember.data)
+          next_page = request.args.get('next')
+          return redirect(next_page) if next_page else redirect(url_for('account'))
+        else:
+          flash('Login Unsuccessfully. Please check email and password', 'danger')
       else:
-        flash('Login Unsuccessfuly. Please check email and password', 'danger')
+        flash('Login Unsuccessfully, User does not exist!')
   return render_template('login.html', title='Login', form=form)
 
 
