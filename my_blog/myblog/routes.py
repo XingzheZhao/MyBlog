@@ -30,8 +30,8 @@ def register():
   if form.validate_on_submit():
     # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
     # hashed_password = make_pw_hash(form.password.data)
-    pw_salt = secrets.token_urlsafe(6)
-    hashed_password = hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(pw_salt+secrets.choice(peppers)), 100).hex()
+    pw_salt = secrets.token_urlsafe(10)
+    hashed_password = hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(pw_salt+secrets.choice(peppers)), 10000).hex()
     user = User(username=form.username.data, email=form.email.data, password=hashed_password, salt=pw_salt)
     db.session.add(user)
     db.session.commit()
@@ -52,7 +52,7 @@ def login():
       # if user and check_pw_hash:
       if user:
         for pepper in peppers:
-          if hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(user.salt+pepper), 100).hex() == user.password:
+          if hashlib.pbkdf2_hmac('sha256', str.encode(form.password.data), str.encode(user.salt+pepper), 10000).hex() == user.password:
             isValidPW = True
             break
 
