@@ -23,7 +23,7 @@ pw_salt = secrets.token_urlsafe(10)
 pepper = 'c'
 """
 statement_2 = """
-hashlib.pbkdf2_hmac('sha256', str.encode(pw), str.encode(pw_salt+pepper), 100000).hex()
+hashlib.pbkdf2_hmac('sha256', str.encode(pw), str.encode(pw_salt+pepper), 10000).hex()
 """
 t2 = timeit.timeit(stmt=statement_2, setup=setup_2, number=52)
 t3 = timeit.timeit(stmt=statement_2, setup=setup_2, number=26)

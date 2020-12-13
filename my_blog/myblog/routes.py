@@ -3,18 +3,31 @@ from myblog.forms import RegistrationForm, LoginForm
 from myblog import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from myblog.models import User, Post
-# from myblog.hashutils import make_pw_hash, check_pw_hash
 import hashlib
 import secrets
 import string
 
-
 peppers = list(string.ascii_lowercase) + list(string.ascii_uppercase)
+
+posts = [
+  {
+    'author': 'SamZ',
+    'title': 'Blog Post 1',
+    'content': 'First post content',
+    'date_posted': 'April 20, 2020'
+  },
+  {
+    'author': 'Peter Parker',
+    'title': 'Blog Post 2',
+    'content': 'Second post content',
+    'date_posted': 'December 20, 2020'
+  }
+]
 
 @app.route('/')
 @app.route('/home')
 def home():
-  return render_template('home.html')
+  return render_template('home.html', posts=posts)
 
 
 @app.route("/about")
@@ -45,7 +58,7 @@ def login():
   if current_user.is_authenticated:
     return redirect(url_for('home'))
   form = LoginForm()
-  isValidPW = False
+  isValidPW = False  # flag to check if password mataches
   if form.validate_on_submit():
       user = User.query.filter_by(email=form.email.data).first()
       # if user and bcrypt.check_password_hash(user.password, form.password.data):
