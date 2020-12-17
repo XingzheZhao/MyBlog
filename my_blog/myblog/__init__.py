@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = con
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'login'    # for login required page
 login_manager.login_message_category = 'info'   # ! login messagecolor blue
 
 from myblog import routes
