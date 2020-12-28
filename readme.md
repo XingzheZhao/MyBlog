@@ -4,7 +4,7 @@
 
 - [Description](#description)
 - [Getting Started](#getting-started)
-- [Run Program](#run_program)
+- [Run Program](#run-program)
 - [Author Infor](#author-info)
 
 ---
@@ -102,12 +102,12 @@ pip install mysqlclient-1.4.6-cp39-cp39-win_amd64.whl
 python run.py
 ```
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#myblog)
 
 ---
 
-## Author Infor
+## Author Info
 
 - Linkedin - [Xingzhe (Sam) Zhao](www.linkedin.com/in/sam-xingzhe-zhao-ab61a1112)
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#myblog)
